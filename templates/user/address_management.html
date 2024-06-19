@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+    <div class="container">
+        <div class="row">
+            <!-- SIDEBAR -->
+            {% include 'includes/dashboard_sidebar.html' %}  
+            <div class="col-md-9">
+                <h2 class="section-title">Saved Addresses</h2>
+                {% for address in addresses %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="address-info">
+                            <div class="form-group">
+                                <label for="recipient_name_{{ address.id }}">Recipient Name:</label>
+                                <p id="recipient_name_{{ address.id }}">{{ address.first_name }}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_{{ address.id }}">Phone:</label>
+                                <p id="phone_{{ address.id }}">{{ address.phone }}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="email_{{ address.id }}">Email:</label>
+                                <p id="email_{{ address.id }}">{{ address.email }}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="location_{{ address.id }}">Address:</label>
+                                <p id="location_{{ address.id }}">{{ address.address_line_1 }}  {{ address.address_line_2 }} </p>
+                            </div>
+                            <div class="form-group">
+                                <label for="po_box_{{ address.id }}">Country:</label>
+                                <p id="po_box_{{ address.id }}">{{ address.country }}</p>
+                            </div>
+                            <div class="btn-group" role="group" aria-label="Address Actions">
+                                <a href="{% url "edit_address" id=address.id %}" class="btn btn-primary">Edit</a>
+                                <a href="{% url "delete_address" id=address.id%}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div> <!-- row.// -->
+    </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock content %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y bg">
+
+    <div class="container">
+        <div class="row">
+            <!-- SIDEBAR -->
+            {% include 'includes/dashboard_sidebar.html' %} 
+            <div class="col-md-9">
+                <h2 class="section-title">Edit Profile</h2>
+                {% include 'includes/alerts.html' %}
+                <form method="post" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}" pattern="[0-9]{10}" title="Please enter a 10-digit phone number" required>
+                        <small id="phoneHelp" class="form-text text-muted">Please enter a 10-digit phone number without any special characters.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div> <!-- row.// -->
+    </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+<script>
+    function validateForm() {
+        var firstName = document.getElementById("first_name").value;
+        var lastName = document.getElementById("last_name").value;
+        var firstNameRegex = /^[^_\s\d][a-zA-Z\s]*$/;
+        var lastNameRegex = /^[^_\s\d][a-zA-Z\s]*$/;
+
+        if (!firstNameRegex.test(firstName)) {
+            alert("First name cannot start with underscore or contain numbers.");
+            return false;
+        }
+
+        if (!lastNameRegex.test(lastName)) {
+            alert("Last name cannot start with underscore or contain numbers.");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+{% endblock content %}

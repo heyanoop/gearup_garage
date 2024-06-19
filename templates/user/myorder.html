@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y bg">
+
+    <div class="container">
+        <div class="row">
+            <!-- SIDEBAR -->
+            {% include 'includes/dashboard_sidebar.html' %} 
+            <div class="col-md-9">
+                <h2 class="section-title">Order History</h2>
+                {% for order in all_orders %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <!-- Order status -->
+                        <p><span class="text-success">{{order.status}}</span></p>
+                        <!-- Order details content -->
+                        <p>Order Number: #{{ order.id }}</p>
+                        <p>Order Date: {{ order.created_at }}</p>
+                       
+                        <p>Total Price: ${{ order.order_total }}</p>
+                      
+                        <a href = "{% url "order_info" order_id=order.id %}">
+                            <button type="button" class="btn btn-info">Details</button>
+                            </a>
+                       
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- Pagination -->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        {% if orders.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ orders.previous_page_number }}">Previous</a>
+                            </li>
+                        {% endif %}
+                        
+                    </ul>
+                </nav>
+            </div>
+        </div> <!-- row.// -->
+    </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock content %}

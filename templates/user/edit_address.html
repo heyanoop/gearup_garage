@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <style>
+    /* Styling for form container */
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    
+    /* Styling for form labels */
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    /* Styling for form input fields */
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: calc(100% - 10px);
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    /* Styling for submit button */
+    button[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    
+    /* Change button color on hover */
+    button[type="submit"]:hover {
+      background-color: #45a049;
+    }
+  </style>
+
+  <div class="form-container">
+    <form method="post" onsubmit="return validateForm()">    
+      {% csrf_token %}
+      <label for="first_name">First Name:</label>
+      <input type="text" id="first_name" name="first_name" value="{{ address.first_name }}" required>
+      
+      <label for="last_name">Last Name:</label>
+      <input type="text" id="last_name" name="last_name" value="{{ address.last_name }}" required>
+      
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" value="{{ address.email }}" required>
+      
+      <label for="phone">Phone:</label>
+      <input type="tel" id="phone" name="phone" value="{{ address.phone }}" required pattern="\d{3}\d{3}\d{4}" title="Please enter a phone number in XXX-XXX-XXXX format">
+      
+      <label for="address_line_1">Address Line 1:</label>
+      <input type="text" id="address_line_1" name="address_line_1" value="{{ address.address_line_1 }}" required>
+      
+      <label for="address_line_2">Address Line 2:</label>
+      <input type="text" id="address_line_2" name="address_line_2" value="{{ address.address_line_2 }}">
+      
+      <label for="pincode">Pincode:</label>
+      <input type="text" id="pincode" name="pincode" value="{{ address.pincode }}" required pattern="\d{6}" title="Please enter a valid 6-digit pincode">
+
+      <label for="city">City:</label>
+      <input type="text" id="city" name="city" value="{{ address.city }}" required>
+      
+      <label for="state">State:</label>
+      <input type="text" id="state" name="state" value="{{ address.state }}" required>
+      
+      <label for="country">Country:</label>
+      <input type="text" id="country" name="country" value="{{ address.country }}" required>
+      
+      <label for="address_type">Address Type:</label>
+      <select id="address_type" name="address_type">
+        <option value="home" {% if address.address_type == 'home' %} selected {% endif %}>Home</option>
+        <option value="office" {% if address.address_type == 'office' %} selected {% endif %}>Office</option>
+      </select>
+      
+      <button type="submit">Update Address</button>
+    </form>
+  </div>
+
+  <script>
+    function validateForm() {
+      var firstName = document.getElementById("first_name").value;
+      var lastName = document.getElementById("last_name").value;
+      var phone = document.getElementById("phone").value;
+      
+      // Check if first name contains only alphabets
+      if (!/^[A-Za-z]+$/.test(firstName)) {
+        alert("First name can only contain letters.");
+        return false;
+      }
+      
+      // Check if last name contains only alphabets
+      if (!/^[A-Za-z]+$/.test(lastName)) {
+        alert("Last name can only contain letters.");
+        return false;
+      }
+      
+      // Check if phone number contains only numbers
+      if (!/^\d{10}$/.test(phone)) {
+        alert("Phone number must be 10 digits.");
+        return false;
+      }
+      
+      return true;
+    }
+  </script>
+{% endblock %}

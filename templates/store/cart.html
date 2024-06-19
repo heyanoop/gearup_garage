@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<section class="section-content padding-y bg">
+<div class="container">
+
+<!-- ============================ DISPLAY MESSAGES ================================= -->
+{% if messages %}
+<div class="row">
+    <div class="col">
+        <div class="alert alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- ============================ COMPONENT 1 ================================= -->
+
+<div class="row">
+    <aside class="col-lg-9">
+        <div class="card">
+            <table class="table table-borderless table-shopping-cart">
+                <thead class="text-muted">
+                    <tr class="small text-uppercase">
+                        <th scope="col">Product</th>
+                        <th scope="col" width="120">Quantity</th>
+                        <th scope="col" width="120">Price</th>
+                        <th scope="col" class="text-right" width="200"> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>
+                            <figure class="itemside align-items-center">
+                                <div class="aside">
+                                    {% with item.images.all|first as first_image %}
+                                    <img src="{{ item.product.images.first.image.url }}" class="img-sm">
+                                    {% endwith %}
+                                </div>
+                                <figcaption class="info">
+                                    <a href="{{item.product.get_url}}" class="title text-dark">{{item.product}}</a>
+                                </figcaption>
+                            </figure>
+                        </td>
+                        <td>
+                            <div class="col">
+                                <div class="input-group input-spinner">
+                                    <div class="input-group-prepend">
+                                        <a href="{% url 'cart_increase' increase_id=item.id %}" class="btn btn-light">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{item.quantity}}">
+                                    <div class="input-group-append">
+                                        <a href="{% url 'cart_decrease' decrease_id=item.id %}" class="btn btn-light">
+                                            <i class="fa fa-minus"></i>
+                                        </a>
+                                    </div>
+                                </div> <!-- input-group.// -->
+                            </div>
+                        </td>
+                        <td>
+                            <div class="price-wrap">
+                                <var class="price">{{item.product.price}}</var>
+                                <small class="text-muted">{{item.product.price}}</small>
+                            </div> <!-- price-wrap .// -->
+                        </td>
+                        <td class="text-right">
+                            <a href=" {% url "cart_remove" p_id=item.product.id %}"><button type="button" class="btn btn-danger">Remove</button></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div> <!-- card.// -->
+    </aside> <!-- col.// -->
+    <aside class="col-lg-3">
+        <div class="card">
+            <div class="card-body">
+
+                <form method="POST" action="{% url "apply_coupon" %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="coupon_code">Have a coupon?</label>
+                        <select name="coupon_code" class="form-control">
+                            {% if 'coupon_code' in request.session %}
+							<option value="">{{active_coupon}}</option>
+							{% else %}
+							<option value="">select coupon</option>
+							{% endif %}
+                            {% for coupon in coupons %}
+                                <option value="{{ coupon.code }}">{{ coupon.code }} - {{ coupon.discount }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="input-group-append mt-2">
+							{% if 'coupon_code' in request.session %}
+							<a href ="{% url "remove_coupon" %}">
+							<button type="button" class="btn btn-danger">Remove</button>
+							</a>
+							{% else %}
+							<button type="submit" class="btn btn-primary">Apply</button>
+							
+							{% endif %}
+                        </div>
+                    </div>
+                </form>
+                
+                <dl class="dlist-align">
+                  <dt>Total price:</dt>
+                  <dd class="text-right">{{total_price}}</dd>
+                </dl>
+                <dl class="dlist-align">
+                  <dt>Tax:</dt>
+                  <dd class="text-right"> {{tax}}</dd>
+                </dl>
+				<dl class="dlist-align">
+					<dt>Discounts:</dt>
+					<dd class="text-right"> {{discount}}</dd>
+				  </dl>
+                <dl class="dlist-align">
+                  <dt>Total:</dt>
+                  <dd class="text-right text-dark b"><strong>{{final_price}}</strong></dd>
+                </dl>
+                <hr>
+                <p class="text-center mb-3">
+                    <img src="{% static "./images/misc/payments.png" %}" height="26">
+                </p>
+                <a href="{% url "checkout" %}" class="btn btn-primary btn-block"> Checkout </a>
+                <a href="{% url "store" %}" class="btn btn-light btn-block">Continue Shopping</a>
+            </div> <!-- card-body.// -->
+        </div> <!-- card.// -->
+    </aside> <!-- col.// -->
+</div> <!-- row.// -->
+<!-- ============================ COMPONENT 1 END .// ================================= -->
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+</body>
+</html>
+
+{% endblock %}

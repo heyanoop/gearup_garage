@@ -1,0 +1,116 @@
+
+{% extends 'myadmin/layouts/base.html' %}
+{% load static %}
+{% block title %} Tables {% endblock title %}
+
+{% block content %}
+
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Coupons</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              
+                <li class="breadcrumb-item active" aria-current="page">Coupon Management</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="col-lg-6 col-5 text-right">
+            <a href="{% url "add_coupon" %}" class="btn btn-sm btn-neutral">Add Coupon</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0">
+            <h3 class="mb-0">Coupons</h3>
+          </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="sort" data-sort="name">Coupon code</th>
+                  <th scope="col" class="sort" data-sort="budget">Valid From</th>
+                  <th scope="col" class="sort" data-sort="status">Expiry</th>
+
+                  <th scope="col" class="sort" data-sort="completion">Discount %</th>
+                  <th scope="col" class="sort" data-sort="completion">Is Active</th>
+
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody class="list">
+          {% for coupon in coupons %} 
+                <tr>
+                  <th scope="row">
+                    <div class="media align-items-center">
+                      <a href="#" class="avatar rounded-circle mr-3">
+                        <img alt="Image placeholder" src="{% static '/assets/img/theme/bootstrap.jpg' %}">
+                      </a>
+                      <div class="media-body">
+                      
+                        <span class="name mb-0 text-sm">{{coupon.code}}</span>
+                      </a>
+                      </div>
+                    </div>
+                  </th>
+                  <td class="budget">
+                    {{coupon.valid_from}}
+                  </td>
+                  <td class="budget">
+                    {{coupon.valid_until}}
+                  </td>
+                  
+                  <td class="budget">
+                    {{coupon.discount}}
+                  </td>
+                  
+                   <td class="budget">
+                    <form method="post" action="{% url 'toggle_coupon_active' coupon_id=coupon.id %}">
+                      {% csrf_token %}
+                      <select name="is_active" onchange="this.form.submit()">
+                        <option value="True" {% if coupon.is_active %}selected{% endif %}>Active</option>
+                        <option value="False" {% if not coupon.is_active %}selected{% endif %}>Inactive</option>
+                      </select>
+                    </form>
+                  </td>
+                  <td class="budget">
+                    {% comment %} <a href="{% url 'delete_user' user_id=user.id %}" class="btn btn-sm btn-danger">Delete</a> {% endcomment %}
+                </td>
+                </tr>
+                {% endfor %}
+              </tbody> 
+            </table>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+            <nav aria-label="...">
+              <ul class="pagination justify-content-end mb-0">
+                
+                
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+       {% include "includes/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

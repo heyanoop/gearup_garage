@@ -1,0 +1,200 @@
+{% extends 'myadmin/layouts/base.html' %}
+{% block title %} Admin Dashboard {% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">Total Revenue: ₹{{ total_sales }}</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">Delivered Orders: {{ total_orders }}</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">Returned Orders: {{ returned_count }}</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">Total Products: {{ total_products }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <!-- Yearly Sales Chart -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="h3 mb-0">Yearly Sales</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="yearly-sales-chart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Monthly Sales Chart -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="h3 mb-0">Monthly Sales</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthly-sales-chart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Weekly Sales Chart -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="h3 mb-0">Weekly Sales</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="weekly-sales-chart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="h3 mb-0">Top Selling Products</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Total Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in top_selling_products %}
+                            <tr>
+                                <td>{{ product.product_name }}</td>
+                                <td>{{ product.total_orders }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="h3 mb-0">Top Selling Categories</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Total Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in top_selling_categories %}
+                            <tr>
+                                <td>{{ category.category_name }}</td>
+                                <td>{{ category.total_orders }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Yearly Sales Chart
+        var yearlyCtx = document.getElementById('yearly-sales-chart').getContext('2d');
+        var yearlySalesChart = new Chart(yearlyCtx, {
+            type: 'line',
+            data: {
+                labels: [{% for month_name in month_names %}"{{ month_name }}",{% endfor %}],
+                datasets: [{
+                    label: 'Total Orders',
+                    data: [{% for sales_data in combined_sales_data_yearly %}{{ sales_data.total_orders|default:0 }},{% endfor %}],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        // Monthly Sales Chart
+        var monthlyCtx = document.getElementById('monthly-sales-chart').getContext('2d');
+        var monthlySalesChart = new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: [{% for day_num in day_numbers %}"Day {{ day_num }}",{% endfor %}],
+                datasets: [{
+                    label: 'Total Orders',
+                    data: [{% for sales_data in combined_sales_data_monthly %}{{ sales_data.total_orders|default:0 }},{% endfor %}],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        // Weekly Sales Chart
+        var weeklyCtx = document.getElementById('weekly-sales-chart').getContext('2d');
+        var weeklySalesChart = new Chart(weeklyCtx, {
+            type: 'line',
+            data: {
+                labels: [{% for day_name in day_names %}{% if day_name == current_day_name %}"{{ day_name }} (Today)",{% else %}"{{ day_name }}",{% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Total Orders',
+                    data: [{% for sales_data in combined_sales_data_weekly %}{{ sales_data.total_orders }},{% endfor %}],
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+</script>
+{% endblock javascripts %}

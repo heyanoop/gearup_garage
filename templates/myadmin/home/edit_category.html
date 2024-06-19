@@ -1,0 +1,107 @@
+{% extends 'myadmin/layouts/base.html' %}
+{% load static %}
+{% block title %} Profile {% endblock title %}
+
+{% block content %}
+{% if messages %}
+<div class="row">
+    <div class="col">
+        <div class="alert alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="col-xl-8 order-xl-1">
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-0">Edit Category</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" id="category-form">
+                {% csrf_token %}
+                <h6 class="heading-small text-muted mb-4">Category information</h6>
+                <div class="pl-lg-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="input-product-name">Category Name</label>
+                                <input type="text" id="input-product-name" class="form-control" placeholder="Category name" value="{{ category.category_name }}" name="category_name" required>
+                                <div class="invalid-feedback">
+                                    Please provide a category name.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="input-product-name">Category Slug</label>
+                                    <input type="text" id="input-product-name" class="form-control" placeholder="Category Slug" value="{{ category.slug }}" name="category_slug" required readonly>
+                                    
+                                </div>
+                            </div>
+                        <!-- Description -->
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="form-control-label">Description</label>
+                                <textarea rows="4" class="form-control" placeholder="Description" name="description" required>{{ category.description }}</textarea>
+                                <div class="invalid-feedback">
+                                    Please provide a description.
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4" />
+                        <!-- Update Button -->
+                        <div class="col-4 text-center">
+                            <button type="submit" class="btn btn-sm btn-success btn-block">Update</button>
+                        </div>
+                        <!-- Delete Button -->
+                        <div class="col-4 text-center">
+                            <a href="{% url 'delete_category' category.id %}" class="btn btn-sm btn-danger btn-block">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% include "includes/footer.html" %}
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<script>
+    // Form validation using JavaScript
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var form = document.getElementById('category-form');
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+
+            // Generate Slug from Category Name
+            document.getElementById('input-product-name').addEventListener('keyup', function() {
+                var categoryName = document.getElementById('input-product-name').value;
+                var slug = categoryName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                document.getElementById('input-product-slug').value = slug;
+            });
+        }, false);
+    })();
+</script>
+{% endblock javascripts %}

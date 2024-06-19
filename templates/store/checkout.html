@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        <div class="row">
+            <aside class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Billing Address</h4>
+                        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addAddressForm">Add New Address</button>
+                        <div id="addAddressForm" class="collapse mt-3">
+                            <form name="addressForm" action="{% url 'add_address' %}" method="POST" onsubmit="return validateForm()">
+                                {% csrf_token %}
+                                <!-- Address form fields -->
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label for="first_name">First Name</label>
+                                        <input type="text" name="first_name" id="first_name" class="form-control" required>
+                                        <small id="first_name_error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="last_name">Last Name</label>
+                                        <input type="text" name="last_name" id="last_name" class="form-control" required>
+                                        <small id="last_name_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label for="email">Email</label>
+                                        <input type="email" name="email" id="email" class="form-control" required>
+                                        <small id="email_error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="phone">Phone</label>
+                                        <input type="tel" name="phone" id="phone" class="form-control" required>
+                                        <small id="phone_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12">
+                                        <label for="address_line_1">Address Line 1</label>
+                                        <input type="text" name="address_line_1" id="address_line_1" class="form-control" required>
+                                        <small id="address_line_1_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12">
+                                        <label for="address_line_2">Address Line 2</label>
+                                        <input type="text" name="address_line_2" id="address_line_2" class="form-control" required>
+                                        <small id="address_line_2_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label for="pincode">Pincode</label>
+                                        <input type="text" name="pincode" id="pincode" class="form-control" required>
+                                        <small id="pincode_error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="city">City</label>
+                                        <input type="text" name="city" id="city" class="form-control" required>
+                                        <small id="city_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label for="state">State</label>
+                                        <input type="text" name="state" id="state" class="form-control" required>
+                                        <small id="state_error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="country">Country</label>
+                                        <input type="text" name="country" id="country" class="form-control" required>
+                                        <small id="country_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12">
+                                        <label for="address_type">Address Type</label>
+                                        <select name="address_type" id="address_type" class="form-control" required>
+                                            <option value="">Select Address Type</option>
+                                            <option value="Home">Home</option>
+                                            <option value="Office">Office</option>
+                                        </select>
+                                        <small id="address_type_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <!-- Add other form rows as needed -->
+                                <button type="submit" class="btn btn-primary mt-3">Add Address</button>
+                            </form>
+                        </div>
+                        <!-- Existing addresses -->
+                        {% if addresses %}
+                        <form action="{% url 'place_order' %}" method="POST">
+                            {% csrf_token %}
+                            {% for address in addresses %}
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="address" id="address{{ address.id }}" value="{{ address.id }}" {% if forloop.counter == 1 %}checked{% endif %} required>
+                                    <label class="form-check-label" for="address{{ address.id }}">
+                                        {{ address.first_name }} {{ address.last_name }},
+                                        {{ address.address_line_1 }}, {{ address.address_line_2 }},
+                                        {{ address.city }}, {{ address.state }},
+                                        {{ address.pincode }}, {{ address.country }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                            <!-- Payment method dropdown -->
+                            <div class="form-group">
+                                <label for="payment_method">Payment Method</label>
+                                <select name="payment_method" id="payment_method" class="form-control" required>
+                                    <option value="">Select Payment Method</option>
+                                    {% if final_price < 1000 %}
+                                    <option value="cash on Delivery">Cash On Delivery</option>
+                                    {% endif %}
+                                    <option value="debit_card">Razor Pay</option>
+                                    <option value="wallet">Wallet</option>
+                                </select>
+                            </div>
+                            <!-- Place order button -->
+                            <button type="submit" class="btn btn-primary btn-block">Place Order</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Card to display order summary -->
+            <aside class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Order Summary</h4>
+                        <!-- Display coupon details -->
+                        <p>Coupon Used: {{ coupon.code }}</p>
+                        <!-- Display original price and discount -->
+                        <p>Original Price: {{ original_price }}</p>
+                        <p>Tax: {{ tax }}</p>
+                        <p>Coupon Discount: {{ coupon_discount }}</p>
+                        <p>Final Price: {{ final_price }}</p>
+                        <!-- Add any other relevant order summary details here -->
+                    </div>
+                </div>
+            </aside>
+        </div> <!-- row.// -->
+    </div>
+</section>
+
+{% endblock %}
+
+<script>
+    function validateForm() {
+        // Retrieve form fields and error message elements
+        var firstName = document.getElementById("first_name").value.trim();
+        var lastName = document.getElementById("last_name").value.trim();
+        var email = document.getElementById("email").value.trim();
+        var phone = document.getElementById("phone").value.trim();
+        var addressLine1 = document.getElementById("address_line_1").value.trim();
+        var addressLine2 = document.getElementById("address_line_2").value.trim();
+        var pincode = document.getElementById("pincode").value.trim();
+        var city = document.getElementById("city").value.trim();
+        var state = document.getElementById("state").value.trim();
+        var country = document.getElementById("country").value.trim();
+        var addressType = document.getElementById("address_type").value.trim();
+    
+        var isValid = true;
+    
+        // Clear previous error messages
+        document.querySelectorAll('.text-danger').forEach(function(errorElement) {
+            errorElement.textContent = "";
+        });
+    
+        // Perform validation checks and display error messages
+        if (firstName === "") {
+            document.getElementById("first_name_error").textContent = "First Name is required";
+            isValid = false;
+        }
+        if (lastName === "") {
+            document.getElementById("last_name_error").textContent = "Last Name is required";
+            isValid = false;
+        }
+        if (email === "") {
+            document.getElementById("email_error").textContent = "Email is required";
+            isValid = false;
+        }
+        if (phone === "") {
+            document.getElementById("phone_error").textContent = "Phone is required";
+            isValid = false;
+        }
+        if (addressLine1 === "") {
+            document.getElementById("address_line_1_error").textContent = "Address Line 1 is required";
+            isValid = false;
+        }
+        if (addressLine2 === "") {
+            document.getElementById("address_line_2_error").textContent = "Address Line 2 is required";
+            isValid = false;
+        }
+        if (pincode === "") {
+            document.getElementById("pincode_error").textContent = "Pincode is required";
+            isValid = false;
+        }
+        if (city === "") {
+            document.getElementById("city_error").textContent = "City is required";
+            isValid = false;
+        }
+        if (state === "") {
+            document.getElementById("state_error").textContent = "State is required";
+            isValid = false;
+        }
+        if (country === "") {
+            document.getElementById("country_error").textContent = "Country is required";
+            isValid = false;
+        }
+        if (addressType === "") {
+            document.getElementById("address_type_error").textContent = "Address Type is required";
+            isValid = false;
+        }
+    
+        // Check if an existing address is selected
+        var addressRadios = document.getElementsByName("address");
+        var isAddressSelected = false;
+        for (var i = 0; i < addressRadios.length; i++) {
+            if (addressRadios[i].checked) {
+                isAddressSelected = true;
+                break;
+            }
+        }
+    
+        if (!isAddressSelected) {
+            alert("Please select an address before placing the order.");
+            return false;
+        }
+    
+        return isValid;
+    }
+</script>

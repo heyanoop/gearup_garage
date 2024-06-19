@@ -1,0 +1,59 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+
+<!-- ========================= SECTION MAIN ========================= -->
+<section class="section-intro padding-y-sm">
+<div class="container">
+
+<div class="intro-banner-wrap">
+	<img src={% static "images/banners/1.jpg" %} class="img-fluid rounded">
+</div>
+
+</div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION MAIN END// ========================= -->
+
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name padding-y-sm">
+<div class="container">
+
+<header class="section-heading">
+	<a href={% url 'store'%} class="btn btn-outline-primary float-right">See all</a>
+	<h3 class="section-title">Popular products</h3>
+</header><!-- sect-heading -->
+
+
+<div class="row">
+	{% for product in products %}
+	<div class="col-md-3">
+		<figure class="card card-product-grid">
+			<div class="img-wrap">
+				{% with product.images.all|first as first_image %}
+				<a href="{{ product.get_url }}"><img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}"></a>
+				{% endwith %}
+			</div>
+			<figcaption class="info-wrap">
+				<div class="fix-height">
+					<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
+					<div class="price-wrap mt-2">
+						<span class="price">{{ product.price }}</span>
+					</div>
+				</div>
+			</figcaption>
+		</figure>
+		{% if product.stock <= 0%}
+			<h3>Out of stock</h3>
+			{% else %}
+				<a href="{% url "add_cart" product_id=product.id %}" class="btn btn-block btn-success">Add to cart </a>
+			{% endif %}
+	</div>
+	{% endfor %}
+</div>
+<!-- ============================ COMPONENT 1 END .// ================================= -->
+</div>
+</section>
+{% endblock %}

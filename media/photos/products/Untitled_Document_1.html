@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        <div class="row">
+            <aside class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Billing Address</h4>
+                        <!-- Existing addresses -->
+                        {% if addresses %}
+                        <form action="{% url 'place_order' %}" method="POST" id="placeOrderForm">
+                            {% csrf_token %}
+                            {% for address in addresses %}
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="address" id="address{{ address.id }}" value="{{ address.id }}" required>
+                                <label class="form-check-label" for="address{{ address.id }}">
+                                    {{ address.first_name }} {{ address.last_name }}, 
+                                    {{ address.address_line_1 }}, 
+                                    {% if address.address_line_2 %}{{ address.address_line_2 }}, {% endif %}
+                                    {{ address.city }}, 
+                                    {{ address.state }}, 
+                                    {{ address.country }}, 
+                                    {{ address.pincode }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                            <hr>
+                        {% endif %}
+                        <!-- Add new address form -->
+                        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addAddressForm">Add New Address</button>
+                        <div id="addAddressForm" class="collapse mt-3">
+                            <!-- Remove form tag -->
+                            {% csrf_token %}
+                            <!-- Address form fields -->
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="">First Name</label>
+                                    <input type="text" name="first_name" class="form-control">
+                                    <small id="first_name_error" class="text-danger"></small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                        <label for="">Last Name</label>
+                                        <input type="text" name="last_name" class="form-control">
+                                        <small id="last_name_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label for="">Email</label>
+                                        <input type="email" name="email" class="form-control">
+                                        <small id="email_error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="">Phone Number</label>
+                                        <input type="text" name="phone" class="form-control">
+                                        <small id="phone_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Address Line 1</label>
+                                    <input type="text" name="address_line_1" class="form-control">
+                                    <small id="address_line_1_error" class="text-danger"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Address Line 2</label>
+                                    <input type="text" name="address_line_2" class="form-control">
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4">
+                                        <label for="">Pincode</label>
+                                        <input type="text" name="pincode" class="form-control">
+                                        <small id="pincode_error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="">City</label>
+                                        <input type="text" name="city" class="form-control">
+                                        <small id="city_error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="">State</label>
+                                        <input type="text" name="state" class="form-control">
+                                        <small id="state_error" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label for="">Country</label>
+                                        <input type="text" name="country" class="form-control">
+                                        <small id="country_error" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="address_type">Address Type</label>
+                                        <select name="address_type" class="form-control" required>
+                                            <option value="Home">Home</option>
+                                            <option value="Office">Office</option>
+                                        </select>
+                                    </div>
+                            </div>
+                            <!-- Add other form fields -->
+                            <button type="button" class="btn btn-primary mt-3" onclick="addAddress()">Add Address</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Rest of your code -->
+        </div> <!-- row.// -->
+    </div>
+</section>
+
+<script>
+    function addAddress() {
+        // Logic to add the address to the main form data
+        // Example:
+        var formData = new FormData(document.getElementById('placeOrderForm'));
+        var addressFormData = new FormData(document.getElementById('addAddressForm').querySelector('form'));
+        for (var pair of addressFormData.entries()) {
+            formData.append(pair[0], pair[1]);
+        }
+        // Submit the main form with added address data
+        fetch("{% url 'place_order' %}", {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                // Redirect or handle success
+            } else {
+                // Handle errors
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+{% endblock %}
+

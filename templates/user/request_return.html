@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card">
+        <div class="card-header">
+            <h2>Return Request Form</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="reason">Select Reason for Return:</label>
+                    <select class="form-control" id="reason" name="reason" required>
+                        <option value="Defective product">Defective product</option>
+                        <option value="Incorrect item received">Incorrect item received</option>
+                        <option value="Better price available">Better price available</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Return Request</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

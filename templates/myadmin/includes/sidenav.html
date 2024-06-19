@@ -1,0 +1,70 @@
+<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+  <div class="scrollbar-inner">
+    <!-- Brand -->
+    <div class="sidenav-header  align-items-center">
+    </div>
+    <div class="navbar-inner">
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+        <!-- Nav items -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url "admin_dash" %}">
+              <i class="ni ni-tv-2 text-primary"></i>
+              <span class="nav-link-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href = "{% url "user_list" %}" >
+              <i class="ni ni-single-02 text-yellow"></i>
+              <span class="nav-link-text">Users</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url "product_list" %}">
+              <i class="ni ni-planet text-orange"></i>
+              <span class="nav-link-text">Product</span>
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href= "{% url "category_list" %}">
+              <i class="ni ni-bullet-list-67 text-default"></i>
+              <span class="nav-link-text">Categories</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'orders' %}">
+              <i class="ni ni-basket text-default"></i>
+              <span class="nav-link-text">Order</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url "coupon" %}">
+              <i class="ni ni-map-big text-default"></i>
+              <span class="nav-link-text">Coupon</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url "sales_report" %}">
+              <i class="ni ni-map-big text-default"></i>
+              <span class="nav-link-text">Sales Report</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url "category_offer" %}">
+              <i class="ni ni-scissors text-default"></i>
+              <span class="nav-link-text">Category Offer</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url "product_offer" %}">
+              <i class="ni ni-scissors text-default"></i>
+              <span class="nav-link-text">Product Offer</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

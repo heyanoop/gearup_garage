@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section-conten padding-y bg">
+    <div class="container">
+        <div class="row">
+            {% include 'includes/dashboard_sidebar.html' %}
+            <main class="col-md-9">
+                <article class="card">
+                    <header class="card-header">
+                        <strong class="d-inline-block mr-3 d-flex justify-content-center">Confirm Order Cancellation</strong>
+                    </header>
+                    <div class="card-body">
+                        <p>Are you sure you want to cancel the order?</p>
+                        <div class="text-center">
+                            <a href="{% url "cancel_order" id=single_order.id %}" class="btn btn-danger">Yes, Cancel Order</a>
+                            <a href="{% url "order_info" order_id=single_order.id %}" class="btn btn-primary">No, Go Back</a>
+                        </div>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'myadmin/layouts/base.html' %}
+{% load static %}
+
+{% block title %} Sales Report {% endblock title %}
+
+{% block content %}
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header border-0">
+                    <h3 class="mb-0">Sales Report</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <form method="GET" action="{% url 'sales_report' %}" class="form-inline">
+                            <div class="form-group">
+                                <label for="start_date">Start Date:</label>
+                                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date|default:'' }}" onchange="checkDates()">
+                            </div>
+                            <div class="form-group ml-3">
+                                <label for="end_date">End Date:</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date|default:'' }}" min="{{ today|date:'Y-m-d' }}" onchange="checkDates()">
+                            </div>
+                            <button type="submit" class="btn btn-primary ml-3">Filter</button>
+                        </form>
+                        <a href="{% url 'sales_report' %}?generate_pdf=true&start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-info">Download PDF</a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+            
+                    <table id="sales-table" class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" class="sort" data-sort="order_id">Order ID</th>
+                                <th scope="col" class="sort" data-sort="user">User</th>
+                                <th scope="col" class="sort" data-sort="order_date">Order Date</th>
+                                <th scope="col" class="sort" data-sort="payment_method">Payment Method</th>
+                                <th scope="col" class="sort" data-sort="total_amount">Total Amount</th>
+                                <th scope="col" class="sort" data-sort="coupon_used">Coupon Used</th>
+                                <th scope="col" class="sort" data-sort="coupon_discount">Coupon Discount</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                            {% for order in order_details %}
+                            <tr>
+                                <td class="order_id">
+                                    {{ order.id }}
+                                </td>
+                                <td class="user">
+                                    {{ order.user.first_name }} {{ order.user.last_name }}
+                                </td>
+                                <td class="order_date">
+                                    {{ order.created_at }}
+                                </td>
+                                <td class="payment_method">
+                                    {{ order.payment_method }}
+                                </td>
+                                <td class="total_amount">
+                                    ₹{{ order.order_total }}
+                                </td>
+                                <td class="coupon_used">
+                                    {% if order.coupon_used %}
+                                        {{ order.coupon_used }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td class="coupon_discount">
+                                    {% if order.coupon_used %}
+                                        {{ order.discount_price }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function downloadPDF() {
+        var form = document.getElementById('sales-report-form');
+        form.submit();
+    }
+</script>
+
+<script>
+    function checkDates() {
+        var startDate = new Date(document.getElementById('start_date').value);
+        var endDate = new Date(document.getElementById('end_date').value);
+        var today = new Date();
+
+        if (endDate < startDate) {
+            alert('End date cannot be earlier than start date.');
+            document.getElementById('end_date').value = '';
+        } else if (startDate > today || endDate > today) {
+            alert('Future dates are not allowed.');
+            document.getElementById('start_date').value = '';
+            document.getElementById('end_date').value = '';
+        }
+    }
+</script>
+{% endblock content %}
+
+
+
+
+

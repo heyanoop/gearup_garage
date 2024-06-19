@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Inline CSS Invoice Template</title>
+  </head>
+  <body>
+    <h1>Gearup Garage</h1>
+    <div style="padding: 10px;">
+      <table style="width: 100%;">
+        <tr style="width: 100%;">
+          <td style="width: 50%;">
+            <label style="font-size: 40px; font-weight: bold;">{{ order.id }}</label>
+          </td>
+          <td style="width: 50%; text-align: right;">
+            <img style="max-width: 200px;" src="DevsDeckLogo.png" alt="Company Logo" />
+          </td>
+        </tr>
+      </table>
+      <table style="width: 100%; margin: 10px 0px;">
+        <tr style="width: 100%;">
+          <td style="width: 33%; line-height: 25px;">
+            <label>From</label><br />
+            <label style="font-weight: bold; font-size: 20px;">{{ order.business_name }}</label><br />
+            Gearup Garage <br />
+            Kundannur
+            Maradu<br />
+           
+            Kochi, Kerala - India
+          </td>
+          <td style="width: 33%; line-height: 25px;">
+            <label>To</label><br />
+            <label style="font-weight: bold; font-size: 20px;">{{ order.first_name }} {{ order.last_name }}</label><br />
+            {{ order.address_line_1 }} <br />
+            {% if order.address_line_2 %}
+            {{ order.address_line_2 }} <br />
+            {% endif %}
+            {{ order.city }}, {{ order.state }} - {{ order.pincode }}
+          </td>
+          <td style="width: 33%; margin: auto;">
+            <span
+              style="
+                background: #e1e1e1;
+                font-size: 30px;
+                font-weight: bold;
+                padding: 10px;
+                color: #343a40;
+              "
+            >
+              Thank you for shopping</span>
+          </td>
+        </tr>
+      </table>
+      <table style="width: 100%;">
+        <tr style="background: #343a40; color: white;">
+          <th style="padding: 10px;">
+            Description
+          </th>
+          <th>
+            price per piece
+          </th>
+          <th>
+            Quantity
+          </th>
+       
+          
+         
+        </tr>
+        {% for item in order_products %}
+        <tr>
+          <td>
+            {{ item.product.product_name }}
+          </td>
+          <td>
+            ₹{{ item.product_price }}
+          </td>
+          <td>
+            {{ item.quantity }}
+          </td>
+          
+        </tr>
+        {% endfor %}
+      </table>
+      <table style="width: 100%; position: fixed; bottom: 0;">
+        <tr style="width: 100%;">
+          <td style="width: 50%;">
+            <div>
+           
+            </div>
+            <div>
+              
+            </div>
+          </td>
+          <td
+            style="
+              width: 50%;
+              background-color: whitesmoke;
+              text-align: center;
+              padding: 10px;
+            "
+          >
+            <label
+              style="
+                font-size: 30px;
+                color: #000000;
+                text-transform: uppercase;
+                margin: auto;
+              "
+              >Order Total - {{order.order_total}}</label
+            >
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

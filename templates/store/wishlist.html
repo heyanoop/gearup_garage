@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<section class="section-content padding-y bg">
+    <div class="container">
+
+        <!-- ============================ DISPLAY MESSAGES ================================= -->
+        {% if messages %}
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ============================ COMPONENT 1 ================================= -->
+        <h2>Wishlist</h2>
+        <div class="row">
+            <aside class="col-lg-9">
+                <div class="card">
+                    <table class="table table-borderless table-shopping-cart">
+                        <thead class="text-muted">
+                            <tr class="small text-uppercase">
+                                <th scope="col">Product</th>
+                                <th scope="col" width="120"></th>
+                                <th scope="col" width="120">Price</th>
+                                <th scope="col" class="text-right" width="200"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in product %}
+                            <tr>
+
+                                <td>
+                                    <figure class="itemside align-items-center">
+                                        <div class="aside">
+                                            {% with item.images.all|first as first_image %}
+                                            <img src="{{ item.product.images.first.image.url }}" class="img-sm">
+                                            {% endwith %}
+                                        </div>
+                                        <figcaption class="info">
+                                            <a href="{{ item.product.get_url }}" class="title text-dark">{{ item.product }}</a>
+                                        </figcaption>
+                                    </figure>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <div class="price-wrap">
+                                        <var class="price">{{ item.product.price }}</var>
+                                        <small class="text-muted">{{ item.product.price }}</small>
+                                    </div> <!-- price-wrap .// -->
+                                </td>
+                                <td class="text-right">
+                                    <a href="{% url 'wishlist_to_cart' p_id=item.product.id %}" class="btn btn-primary">Add To Cart</a>
+                                </td>
+                                <td class="text-right">
+                                    {% comment %} <a href="{% url 'cart_remove' product_id=item.product.id %}" class="btn btn-danger">Remove</a> {% endcomment %}
+                                </td> 
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div> <!-- card.// -->
+
+            </aside> <!-- col.// -->
+
+        </div> <!-- row.// -->
+        <!-- ============================ COMPONENT 1 END .// ================================= -->
+
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+</body>
+</html>
+
+{% endblock%}

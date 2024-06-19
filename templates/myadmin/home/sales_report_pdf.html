@@ -1,0 +1,38 @@
+<table id="sales-table" class="table align-items-center table-flush" style="width: 100%; border-collapse: collapse;">
+    <thead class="thead-light">
+        <tr style="background-color: #f8f9fe;">
+            <th scope="col" class="sort" data-sort="order_id" style="padding: 10px; text-align: left;">Order ID</th>
+            <th scope="col" class="sort" data-sort="user" style="padding: 10px; text-align: left;">User</th>
+            <th scope="col" class="sort" data-sort="order_date" style="padding: 10px; text-align: left;">Order Date</th>
+            <th scope="col" class="sort" data-sort="payment_method" style="padding: 10px; text-align: left;">Payment Method</th>
+            <th scope="col" class="sort" data-sort="total_amount" style="padding: 10px; text-align: left;">Total Amount</th>
+            <th scope="col" class="sort" data-sort="coupon_used" style="padding: 10px; text-align: left;">Coupon Used</th>
+            <th scope="col" class="sort" data-sort="coupon_discount" style="padding: 10px; text-align: left;">Coupon Discount</th>
+        </tr>
+    </thead>
+    <tbody class="list">
+        {% for order in order_details %}
+        <tr>
+            <td class="order_id" style="padding: 10px; text-align: left;">{{ order.id }}</td>
+            <td class="user" style="padding: 10px; text-align: left;">{{ order.user.first_name }} {{ order.user.last_name }}</td>
+            <td class="order_date" style="padding: 10px; text-align: left;">{{ order.created_at }}</td>
+            <td class="payment_method" style="padding: 10px; text-align: left;">{{ order.payment_method }}</td>
+            <td class="total_amount" style="padding: 10px; text-align: left;">₹{{ order.order_total }}</td>
+            <td class="coupon_used" style="padding: 10px; text-align: left;">
+                {% if order.coupon_used %}
+                    {{ order.coupon_used }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td class="coupon_discount" style="padding: 10px; text-align: left;">
+                {% if order.coupon_used %}
+                    {{ order.discount_price }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

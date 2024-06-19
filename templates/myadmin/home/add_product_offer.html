@@ -1,0 +1,86 @@
+{% extends 'myadmin/layouts/base.html' %}
+{% load static %}
+{% block title %} Add Offer {% endblock title %}
+
+{% block content %}
+{% if messages %}
+<div class="row">
+    <div class="col">
+        <div class="alert alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="col-xl-8 order-xl-1">
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-0">Add Product Offer</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" id="add-offer-form">
+                {% csrf_token %}
+                <h6 class="heading-small text-muted mb-4">Offer Information</h6>
+                <div class="pl-lg-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="input-product">Product</label>
+                                <select id="input-product" class="form-control" name="product" required>
+                                    <option value="">Select a product</option>
+                                    {% for product in product_list %}
+                                    <option value="{{ product.id }}">{{ product.product_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">Select a product</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Date From -->
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="input-date-from">Date From</label>
+                                <input type="date" id="input-date-from" class="form-control" name="date_from" required>
+                            </div>
+                        </div>
+                        <!-- Expiry Date -->
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="input-expiry-date">Expiry Date</label>
+                                <input type="date" id="input-expiry-date" class="form-control" name="expiry_date" required>
+                            </div>
+                        </div>
+                        <!-- Discount Percentage -->
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="input-discount">Discount (%)</label>
+                                <input type="number" id="input-discount" class="form-control" name="discount" required min="1" max="70" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4" />
+                    <!-- Add Button -->
+                    <div class="col-4 text-center">
+                        <button type="submit" class="btn btn-sm btn-success btn-block">Add Offer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% include "includes/footer.html" %}
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->

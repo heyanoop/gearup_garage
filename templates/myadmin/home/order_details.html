@@ -1,0 +1,173 @@
+
+{% extends 'myadmin/layouts/base.html' %}
+{% load static %}
+{% block title %} Tables {% endblock title %}
+
+{% block content %}
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Delivery Address</h4>
+                    <p><strong>Address Line 1:</strong> {{ order_details.address_line_1 }}</p>
+                    <p><strong>Address Line 2:</strong> {{ order_details.address_line_2 }}</p>
+                    <p><strong>City:</strong> {{ order_details.city }}</p>
+                    <p><strong>State:</strong> {{ order_details.state }}</p>
+                    <p><strong>Country:</strong> {{ order_details.country }}</p>
+                    <p><strong>Pincode:</strong> {{ order_details.pincode }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Order Info</h4>
+                    <p><strong>User:</strong> {{ order_details.user.first_name }}</p>
+                    <p><strong>Order ID:</strong> {{ order_details.id }}</p>
+                    {% if order_details.status == 'RETURN_REQUESTED' %}
+                    <div class="alert alert-primary" role="alert">
+                      Return Reason: {{order_details.return_note}}
+                    </div>
+                    <a href = "{% url "approve_return" id=order_details.id %}"><button type="button" class="btn btn-primary">Accept Return</button></a>
+                    <a href = "{% url "reject_return" id=order_details.id %}"><button type="button" class="btn btn-danger">Reject Return</button></a>
+                    {% elif order_details.status == 'RETURN_ACCEPTED'  %}
+                    <a href = "{% url "init_refund" id=order_details.id %}"><button type="button" class="btn btn-danger">Initialise Refund</button>
+                    {% elif order_details.status == 'RETURN_REJECTED' %}
+                    <div class="alert alert-primary" role="alert">
+                      RETURN_REJECTED
+                    </div>
+                    {% elif order_details.status == 'RETURNED'  %}
+                    <div class="alert alert-primary" role="alert">
+                      RETURNED
+                    </div>
+                    {% else %} 
+                    <form method="POST" action="{% url 'update_order' status_id=order_details.id %}">
+                      {% csrf_token %}
+                        <div class="form-group">
+                            <label for="status">Status:</label>
+                            <select class="form-control" id="status" name="status">
+                                <option value="PENDING" {% if order_details.status == 'PENDING' %} selected {% endif %}>Pending</option>
+                                <option value="CONFIRMED" {% if order_details.status == 'CONFIRMED' %} selected {% endif %}>Confirmed</option>
+                                <option value="SHIPPED" {% if order_details.status == 'SHIPPED' %} selected {% endif %}>Shipped</option>
+                                <option value="DELIVERED" {% if order_details.status == 'DELIVERED' %} selected {% endif %}>Deliveded</option>
+                                <option value="CANCELLED" {% if order_details.status == 'CANCELLED' %} selected {% endif %}>Cancelled</option>
+                                </select>
+                        </div>
+                        <input type="hidden" name="order_id" value="{{ order_details.id }}">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                    {% endif %}
+                    <p><strong>Total Price:</strong> {{ order_details.order_total }}</p>
+                    <p><strong>Final Price:</strong> {{ final_price }}</p>
+                    <p><strong>Ordered Date:</strong> {{ order_details.created_at }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Orders</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+        
+            </nav>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0">
+            <h3 class="mb-0">Orders</h3>
+          </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="sort" data-sort="budget">Product</th>
+                  <th scope="col" class="sort" data-sort="budget">Quantity</th>
+                  <th scope="col" class="sort" data-sort="budget"></th>
+                  <th scope="col" class="sort" data-sort="budget">Price</th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {% for order in order_product %}
+                <tr>
+                  <th scope="row">
+                    <div class="media align-items-center">
+                      <a href="#" class="avatar rounded-circle mr-3">
+                        <img alt="Image placeholder" src="{% static '/assets/img/theme/bootstrap.jpg' %}">
+                      </a>
+                      <div class="media-body"><a href = "">
+                        <span class="name mb-0 text-sm">{{order.product}}</span>
+                      </div>
+                    </div>
+                  </th>
+                  <td class="budget">
+                    {{order.quantity}}
+                  </td>
+                  <td class="budget">
+                    {{order.Order.status}}
+                  </td>
+                  
+                  <td class="budget">
+                    {{order.product_price}}
+                  </td>
+                  
+                
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+            <nav aria-label="...">
+              <ul class="pagination justify-content-end mb-0">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1">
+                    <i class="fas fa-angle-left"></i>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#">
+                    <i class="fas fa-angle-right"></i>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+       {% include "includes/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

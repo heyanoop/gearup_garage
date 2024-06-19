@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+    
+    <!-- ============================ COMPONENT 1 ================================= -->
+    <div class="card">
+        
+        <div class="row no-gutters">
+            <aside class="col-md-6">
+                <div class="product-img-wrapper">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            <!-- Images display here -->
+                            {% for image in product_images %}
+                                <div class="swiper-slide">
+                                    <img src="{{ image.image.url }}" alt="{{ single_product.product_name }}" class="product-image">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <!-- Add Pagination -->
+                        <div class="swiper-pagination"></div>
+                        <!-- Add Navigation -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </aside>
+            <main class="col-md-6 border-left">
+                <article class="content-body">
+                    
+                    <h2 class="title">{{ single_product.product_name }}</h2>
+                    
+                    <div class="mb-3"> 
+                    {% if discount == 0 %}
+                        <var class="price h4">₹{{ single_product.price }}.00</var>
+                    {% else  %}
+                        <del><var class="price h4">₹{{ single_product.old_price }}.00</var></del>
+                        <var class="price h4">₹{{single_product.price}}({{discount}}% off)</var>
+                    {% endif %} 
+                    </div> 
+                    
+                    <p>{{ single_product.description }}</p>
+                    
+                    <hr>
+                    
+                  
+                    
+                    <div class="row">
+                       
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Stock:</strong> <span id="product_stock">{{ single_product.stock }}</span></p>
+                        </div>
+                    </div>
+                    
+                 
+                    
+                    <hr>
+                    <a href="{% url 'add_cart' product_id=single_product.id %}" class="btn btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
+                    <a href="{% url 'add_to_list' product_id=single_product.id %}" class="btn btn-success"> <span class="text">Add to Wishlist</span> <i class="fa fa-heart"></i>  </a>
+                </article> <!-- product-info-aside .// -->
+            </main> <!-- col.// -->
+        </div> <!-- row.// -->
+    </div> <!-- card.// -->
+    <!-- ============================ COMPONENT 1 END .// ================================= -->
+    
+    <br>
+    
+    <div class="row">
+        <div class="col-md-9">
+            <header class="section-heading">
+                <h3>Customer Reviews </h3>  
+            </header>
+            <article class="box mb-3">
+                <div class="icontext w-100">
+                    <img src="{% static 'images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle">
+                    <div class="text">
+                        <span class="date text-muted float-md-right">24.04.2020 </span>  
+                        <h6 class="mb-1">Mike John </h6>
+                    </div>
+                </div> <!-- icontext.// -->
+                <div class="mt-3">
+                    <p>
+                        Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip
+                    </p>    
+                </div>
+            </article>
+        </div> <!-- col.// -->
+    </div> <!-- row.// -->
+    
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+
+<style>
+/* CSS for image zoom */
+.product-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 0;
+    padding-bottom: 75%; /* Adjust this value to control the aspect ratio */
+}
+
+.product-img-wrapper .swiper-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.product-img-wrapper .swiper-slide {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-img-wrapper .product-image {
+    max-width: 100%;
+    max-height: 100%;
+    transition: transform 0.5s ease;
+}
+
+.product-img-wrapper .swiper-slide:hover .product-image {
+    transform: scale(1.5);
+}
+</style>
+
+<!-- Swiper JS -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var swiper = new Swiper('.swiper-container', {
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
+});
+</script>
+
+{% endblock %}

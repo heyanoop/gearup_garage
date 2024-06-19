@@ -1,0 +1,36 @@
+{% extends 'myadmin/layouts/base.html' %}
+{% load static %}
+{% block title %} Delete User {% endblock title %}
+
+{% block content %}
+
+<div class="col-xl-8 order-xl-1">
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-0">Delete User</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <h6 class="heading-small text-muted mb-4">Are you sure you want to delete "{{ user_instance.first_name }}" User?</h6>
+                <hr class="my-4" />
+                <!-- Delete Button -->
+                <div class="col-4 text-center">
+                    <button type="submit" class="btn btn-sm btn-danger btn-block">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% include "includes/footer.html" %}
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+{% endblock javascripts %}
