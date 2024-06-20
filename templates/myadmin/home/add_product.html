@@ -49,7 +49,6 @@
                                 <span id="price-validation-msg" class="text-danger"></span>
                             </div>
                         </div>
-                        <!-- Stock -->
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label for="input-stock">Stock</label>
@@ -57,7 +56,7 @@
                                 <span id="stock-validation-msg" class="text-danger"></span>
                             </div>
                         </div>
-                    </div>
+                       
                     <!-- Description -->
                     <div class="col-lg-12">
                         <div class="form-group">
@@ -96,7 +95,8 @@
                             </select>
                         </div>
                     </div>
-                    <hr class="my-4" />
+                   
+                    <hr class="my-4" >
                     <div class="col-4 text-center">
                         <button type="submit" class="btn btn-sm btn-success btn-block">Add Product</button>
                     </div>
@@ -131,12 +131,6 @@
                 valid = false;
             }
 
-            // Validate stock
-            var stock = $('#input-stock').val().trim();
-            if (stock === '') {
-                $('#stock-validation-msg').text('Stock is required.');
-                valid = false;
-            }
 
             // Validate image files
             var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
@@ -154,5 +148,57 @@
             }
         });
     });
+
+    $(document).ready(function() {
+        // ... (existing code)
+    
+        // Variant handling
+        var maxVariants = 4;
+        var variantCount = 1;
+    
+        $('#add-variant').click(function() {
+            if (variantCount < maxVariants) {
+                var variantGroup = $('<div class="variant-group">' +
+                                        '<div class="row">' +
+                                            '<div class="col">' +
+                                                '<input type="text" class="form-control variant-input" placeholder="Enter variant" name="variants[]" required>' +
+                                            '</div>' +
+                                            '<div class="col">' +
+                                                '<input type="number" class="form-control variant-stock" placeholder="Enter stock" name="variant_stocks[]" min="0" required>' +
+                                            '</div>' +
+                                            '<div class="col-auto">' +
+                                                '<button type="button" class="btn btn-sm btn-danger remove-variant">Remove</button>' +
+                                            '</div>' +
+                                        '</div>' +
+                                     '</div>');
+                $('#variant-container').append(variantGroup);
+                variantCount++;
+            }
+        });
+    
+        $(document).on('click', '.remove-variant', function() {
+            $(this).closest('.variant-group').remove();
+            variantCount--;
+        });
+    
+        $('#edit-product-form').submit(function(event) {
+            var valid = true;
+    
+            // ... (existing validation code)
+    
+            // Validate variants
+            var variantInputs = $('.variant-input');
+            if (variantInputs.length > maxVariants) {
+                $('#variant-validation-msg').text('Maximum ' + maxVariants + ' variants allowed.');
+                valid = false;
+            }
+    
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    });
+    
+   
 </script>
 {% endblock javascripts %}

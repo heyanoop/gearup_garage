@@ -212,17 +212,17 @@ def edit_product(request, product_id):
         
         prod_images = [request.FILES.get('image1'), request.FILES.get('image2'), request.FILES.get('image3')]
         
-        if all(prod_images) and len(prod_images) == 3:
+        if all(prod_images):  # Check if all images are provided
+            # Delete old images and save new ones
             Prod_oldImages = ProductImage.objects.filter(product=instance)
             Prod_oldImages.delete()
             for image in prod_images:
                 if image:
                     ProductImage.objects.create(product=instance, image=image)
-            instance.save()
-            messages.success(request, "Product updated successfully")
-        else:
-            messages.error(request, "3 images required")
-            return redirect("edit_product", product_id=instance.id)
+            
+        messages.success(request, "Product updated successfully")
+        
+        instance.save()
         return redirect('edit_product', product_id=instance.id)
 
     context = {
