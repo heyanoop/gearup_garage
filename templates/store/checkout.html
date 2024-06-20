@@ -137,7 +137,7 @@
                         <!-- Display original price and discount -->
                         <p>Original Price: {{ original_price }}</p>
                         <p>Tax: {{ tax }}</p>
-                        <p>Coupon Discount: {{ coupon_discount }}</p>
+                        <p>Coupon Discount: {% if coupon_discount%} {{ coupon_discount }} {% endif %}</p>
                         <p>Final Price: {{ final_price }}</p>
                         <!-- Add any other relevant order summary details here -->
                     </div>

@@ -103,14 +103,7 @@
                             <button type="submit" class="btn btn-sm btn-success btn-block">Update</button>
                         </div>
                         <div class="col-6 text-center">
-                            <a href="{% url 'toggle_product_active' product_id=instance.id %}"
-                               class="btn btn-sm {% if instance.is_active %}btn-danger{% else %}btn-success{% endif %} btn-block">
-                                {% if instance.is_active %}
-                                    Block
-                                {% else %}
-                                    Unblock
-                                {% endif %}
-                            </a>
+                            <a href="{% url 'delete_product' product_id=instance.id %}" class="btn btn-sm btn-danger btn-block">Delete</a>
                         </div>
                     </div>
                 </div>
