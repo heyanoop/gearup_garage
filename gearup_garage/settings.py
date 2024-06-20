@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.60.63.222', 'www.gearupgarage.heyanoop.online']
+ALLOWED_HOSTS = ['13.60.63.222', 'gearupgarage.heyanoop.online']
 
 
 # Application definition
